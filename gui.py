@@ -1,5 +1,5 @@
 from tkinter import *
-
+import csv
 
 class Gui:
     def __init__(self, window):
@@ -22,7 +22,7 @@ class Gui:
         self.scores_frame = Frame(self.window)
         self.scores_frame.pack(side='top')
         #
-        self.submit_button = Button(self.window, text='SUBMIT')
+        self.submit_button = Button(self.window, text='SUBMIT',command=self.submit)
         self.submit_button.pack()
         #
         self.error_label = Label(self.window, text='', fg='red')
@@ -52,3 +52,29 @@ class Gui:
             new_label.pack(side='left')
             new_entry.pack(side='left')
             new_frame.pack(side='top',anchor='e')
+
+    def submit(self):
+        self.error_message('')
+        new_row = []
+        #
+        name = self.name_entry.get()
+        if name == '':
+            self.error_message('Invalid Name Entry')
+            return
+        else:
+            new_row.append(name)
+        #
+        high_score = 0
+        for i in range(4):
+            try:
+                score = int(self.score_boxes[i].get())
+            except IndexError:
+                score = 0
+            except ValueError:
+                self.error_message('Invalid Score Value(s)')
+                return
+
+        file = open('grades.csv', 'a', newline='')
+        csv_writer = csv.writer(file)
+        csv_writer.writerow(new_row)
+        file.close()
