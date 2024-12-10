@@ -1,3 +1,4 @@
+from multiprocessing.managers import Value
 from tkinter import *
 import csv
 
@@ -14,9 +15,14 @@ class Gui:
         #
         self.attempts_frame = Frame(self.window)
         self.attempts_label = Label(self.attempts_frame, text='No of attempts:')
-        self.attempts_entry = Entry(self.attempts_frame)
+
+        options_list = ['1','2','3','4']
+        self.selected = StringVar(self.window)
+        self.selected.set('')
+        self.selected.trace('w',self.make_score_boxes)
+        self.attempts_optionmenu = OptionMenu(self.attempts_frame, self.selected, *options_list)
         self.attempts_label.pack(side='left',pady=5)
-        self.attempts_entry.pack(side='left',pady=5)
+        self.attempts_optionmenu.pack(side='left',pady=5)
         self.attempts_frame.pack(side='top', padx=5)
         #
         self.scores_frame = Frame(self.window)
@@ -28,22 +34,21 @@ class Gui:
         self.error_label = Label(self.window, text='', fg='red')
         self.error_label.pack()
         #
-        self.score_boxes = []
-        self.make_score_boxes()
+        self.score_frames = []
+        self.score_entries = []
 
     def error_message(self, error):
         self.error_label.config(text=error)
 
-    def make_score_boxes(self):
+    def make_score_boxes(self, *args):
         try:
-            num = int(self.attempts_entry.get())
-            if num not in [1,2,3,4]:
-                raise ValueError
-            self.error_message('')
+            num = int(self.selected.get())
         except ValueError:
-            self.error_message('Invalid Entry')
-            #return
-        num = 4
+            return
+        for score_frame in self.score_frames:
+            score_frame.destroy()
+        self.score_frames = []
+        self.score_entries = []
         #
         for s in range(1, num+1):
             new_frame = Frame(self.scores_frame)
@@ -52,27 +57,36 @@ class Gui:
             new_label.pack(side='left')
             new_entry.pack(side='left')
             new_frame.pack(side='top',anchor='e')
+            self.score_frames.append(new_frame)
+            self.score_entries.append(new_entry)
 
     def submit(self):
         self.error_message('')
         new_row = []
         #
-        name = self.name_entry.get()
+        name = self.name_entry.get().strip()
         if name == '':
             self.error_message('Invalid Name Entry')
             return
         else:
             new_row.append(name)
+        if self.selected.get() == '':
+            self.error_message('Please select number of scores')
+            return
         #
-        high_score = 0
         for i in range(4):
             try:
-                score = int(self.score_boxes[i].get())
+                score = int(self.score_entries[i].get().strip())
+                if score < 0 or score > 100:
+                    raise ValueError
             except IndexError:
                 score = 0
             except ValueError:
                 self.error_message('Invalid Score Value(s)')
                 return
+            new_row.append(score)
+        high_score = max(new_row[1:])
+        new_row.append(high_score)
 
         file = open('grades.csv', 'a', newline='')
         csv_writer = csv.writer(file)
