@@ -1,9 +1,12 @@
-from multiprocessing.managers import Value
 from tkinter import *
 import csv
 
 class Gui:
-    def __init__(self, window):
+    def __init__(self, window) -> None:
+        """
+        initializes an instance of the score submission gui
+        :param window: None
+        """
         self.window = window
         #
         self.name_frame = Frame(self.window)
@@ -16,7 +19,7 @@ class Gui:
         self.attempts_frame = Frame(self.window)
         self.attempts_label = Label(self.attempts_frame, text='No of attempts:')
 
-        options_list = ['1','2','3','4']
+        options_list: list = ['1','2','3','4']
         self.selected = StringVar(self.window)
         self.selected.set('')
         self.selected.trace('w',self.make_score_boxes)
@@ -34,13 +37,27 @@ class Gui:
         self.error_label = Label(self.window, text='', fg='red')
         self.error_label.pack()
         #
-        self.score_frames = []
-        self.score_entries = []
+        self.score_frames: list = []
+        self.score_entries: list = []
 
-    def error_message(self, error):
-        self.error_label.config(text=error)
+    def error_message(self, text) -> None:
+        """
+        edits the text of the error label to be whatever the variable
+        text is
+        :param text: str
+        :return: None
+        """
+        self.error_label.config(text=text)
 
     def make_score_boxes(self, *args):
+        """
+        Destorys all of the current score boxes and generates
+        a number of new ones equal to that of the value from the
+        dropdown menu
+        :param args:
+        :return: None
+        """
+        self.error_message('')
         try:
             num = int(self.selected.get())
         except ValueError:
@@ -92,3 +109,4 @@ class Gui:
         csv_writer = csv.writer(file)
         csv_writer.writerow(new_row)
         file.close()
+        self.error_message('Scores Submitted')

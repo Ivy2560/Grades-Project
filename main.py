@@ -1,6 +1,11 @@
 from gui import *
 
-def main():
+def main() -> None:
+    """
+    Creates an instance of the grade score
+    entry gui
+    :return: None
+    """
     window = Tk()
     window.title('Grade Entry')
     window.geometry('300x260')
