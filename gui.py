@@ -51,21 +51,21 @@ class Gui:
 
     def make_score_boxes(self, *args):
         """
-        Destorys all of the current score boxes and generates
+        Destroys all of the current score boxes and generates
         a number of new ones equal to that of the value from the
         dropdown menu
-        :param args:
+        :param args: trace info
         :return: None
         """
         self.error_message('')
         try:
-            num = int(self.selected.get())
+            num: int = int(self.selected.get())
         except ValueError:
             return
         for score_frame in self.score_frames:
             score_frame.destroy()
-        self.score_frames = []
-        self.score_entries = []
+        self.score_frames: list= []
+        self.score_entries: list = []
         #
         for s in range(1, num+1):
             new_frame = Frame(self.scores_frame)
@@ -79,9 +79,9 @@ class Gui:
 
     def submit(self):
         self.error_message('')
-        new_row = []
+        new_row: list = []
         #
-        name = self.name_entry.get().strip()
+        name: str = self.name_entry.get().strip()
         if name == '':
             self.error_message('Invalid Name Entry')
             return
@@ -93,7 +93,7 @@ class Gui:
         #
         for i in range(4):
             try:
-                score = int(self.score_entries[i].get().strip())
+                score: int = int(self.score_entries[i].get().strip())
                 if score < 0 or score > 100:
                     raise ValueError
             except IndexError:
@@ -102,7 +102,7 @@ class Gui:
                 self.error_message('Invalid Score Value(s)')
                 return
             new_row.append(score)
-        high_score = max(new_row[1:])
+        high_score: int = max(new_row[1:])
         new_row.append(high_score)
 
         file = open('grades.csv', 'a', newline='')

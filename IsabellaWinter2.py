@@ -16,12 +16,6 @@ def grade_one(score, best_score):
 
 
 def grade_many(scores):
-    """
-    Takes in a list of students grades and calculates
-    the be
-    :param scores:
-    :return:
-    """
     best_score = max(scores)
     grades = {}
     for score in set(scores):
