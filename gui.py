@@ -40,7 +40,7 @@ class Gui:
         self.score_frames: list = []
         self.score_entries: list = []
 
-    def error_message(self, text) -> None:
+    def error_message(self, text: str) -> None:
         """
         edits the text of the error label to be whatever the variable
         text is
@@ -49,7 +49,7 @@ class Gui:
         """
         self.error_label.config(text=text)
 
-    def make_score_boxes(self, *args):
+    def make_score_boxes(self, *args) -> None:
         """
         Destroys all of the current score boxes and generates
         a number of new ones equal to that of the value from the
@@ -77,7 +77,12 @@ class Gui:
             self.score_frames.append(new_frame)
             self.score_entries.append(new_entry)
 
-    def submit(self):
+    def submit(self) -> None:
+        """
+        Submits the entered name and scores (if the values for all scores
+        entered and name are valid) to the file grades.csv
+        :return: None
+        """
         self.error_message('')
         new_row: list = []
         #
